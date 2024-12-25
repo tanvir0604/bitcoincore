@@ -5,12 +5,12 @@ export class GeneratingRPC {
 
     // generateblock
     public async generateBlock(
-        nblocks: number,
-        maxtries: number = 100
+        output: string,
+        transactions: string[]
     ): Promise<string[]> {
         return this.bitcoinCore.callMethod('generateblock', [
-            nblocks,
-            maxtries,
+            output,
+            transactions,
         ]);
     }
 
