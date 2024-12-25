@@ -1,0 +1,53 @@
+# Node.js dependencies
+/node_modules/
+
+# Logs
+*.log
+*.log.*
+
+# Build output
+/dist/
+/build/
+/out/
+
+# Dependency directories
+/.pnpm-debug.log
+/.yarn-debug.log
+/.yarn-error.log
+/.npm/
+
+# Docker
+docker-compose.override.yml
+.docker/
+
+# Bitcoin Core files
+*.dat
+*.bak
+debug.log
+bitcoin.conf
+wallet.dat
+*.bak
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# IDE / Editor files
+.vscode/
+.idea/
+
+# System files
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# Custom build directories
+/public/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
