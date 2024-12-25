@@ -1,4 +1,4 @@
-# @tanvir0604/bitcoincore
+# @shafkat/bitcoincore
 
 A comprehensive Node.js package for interacting with Bitcoin Core via RPC. Easily create, sign, and broadcast Bitcoin transactions, manage wallets, and access blockchain data through a simple and easy-to-use API interface. Perfect for developers building cryptocurrency applications, wallets, or integrating Bitcoin functionality into their services.
 
