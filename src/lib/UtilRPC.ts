@@ -6,25 +6,36 @@ export class UtilRPC {
     // createmultisig
     public async createMultisig(
         nrequired: number,
-        keys: string[]
+        keys: string[],
+        addressType: string = 'legacy'
     ): Promise<any> {
-        return this.bitcoinCore.callMethod('createmultisig', [nrequired, keys]);
+        return this.bitcoinCore.callMethod('createmultisig', [
+            nrequired,
+            keys,
+            addressType,
+        ]);
     }
 
     // deriveaddresses
     public async deriveAddresses(
         descriptor: string,
-        index: number
+        range?: number | []
     ): Promise<string[]> {
         return this.bitcoinCore.callMethod('deriveaddresses', [
             descriptor,
-            index,
+            range,
         ]);
     }
 
     // estimatesmartfee
-    public async estimateSmartFee(confTarget: number): Promise<any> {
-        return this.bitcoinCore.callMethod('estimatesmartfee', [confTarget]);
+    public async estimateSmartFee(
+        confTarget: number,
+        estimateMode: 'UNSET' | 'ECONOMICAL' | 'CONSERVATIVE' = 'CONSERVATIVE'
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('estimatesmartfee', [
+            confTarget,
+            estimateMode,
+        ]);
     }
 
     // getdescriptorinfo
@@ -33,7 +44,7 @@ export class UtilRPC {
     }
 
     // getindexinfo
-    public async getIndexInfo(indexName: string): Promise<any> {
+    public async getIndexInfo(indexName?: string): Promise<any> {
         return this.bitcoinCore.callMethod('getindexinfo', [indexName]);
     }
 

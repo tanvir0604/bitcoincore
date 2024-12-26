@@ -4,7 +4,9 @@ export class ControlRPC {
     constructor(private readonly bitcoinCore: BitcoinCore) {}
 
     // getmemoryinfo
-    public async getMemoryInfo(): Promise<any> {
+    public async getMemoryInfo(
+        mode: 'stats' | 'mallocinfo' = 'stats'
+    ): Promise<any> {
         return this.bitcoinCore.callMethod('getmemoryinfo');
     }
 
@@ -19,8 +21,11 @@ export class ControlRPC {
     }
 
     // logging
-    public async logging(): Promise<any> {
-        return this.bitcoinCore.callMethod('logging');
+    public async logging(
+        include: string[] = [],
+        exclude: string[] = []
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('logging', [include, exclude]);
     }
 
     // stop

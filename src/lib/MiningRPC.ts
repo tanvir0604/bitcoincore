@@ -4,8 +4,10 @@ export class MiningRPC {
     constructor(private readonly bitcoinCore: BitcoinCore) {}
 
     // getblocktemplate
-    public async getBlockTemplate(params: any = {}): Promise<any> {
-        return this.bitcoinCore.callMethod('getblocktemplate', [params]);
+    public async getBlockTemplate(templateRequest: {} = {}): Promise<any> {
+        return this.bitcoinCore.callMethod('getblocktemplate', [
+            templateRequest,
+        ]);
     }
 
     // getmininginfo
@@ -15,11 +17,11 @@ export class MiningRPC {
 
     // getnetworkhashps
     public async getNetworkHashPs(
-        blocks: number = 120,
+        nblocks: number = 120,
         height: number = -1
     ): Promise<number> {
         return this.bitcoinCore.callMethod('getnetworkhashps', [
-            blocks,
+            nblocks,
             height,
         ]);
     }
@@ -27,26 +29,23 @@ export class MiningRPC {
     // prioritisetransaction
     public async prioritizeTransaction(
         txid: string,
-        fee_delta: number,
-        conf_target: number
+        dummy: string = '',
+        fee_delta: number
     ): Promise<any> {
         return this.bitcoinCore.callMethod('prioritisetransaction', [
             txid,
+            dummy,
             fee_delta,
-            conf_target,
         ]);
     }
 
     // submitblock
-    public async submitBlock(
-        blockdata: string,
-        params: any = {}
-    ): Promise<any> {
-        return this.bitcoinCore.callMethod('submitblock', [blockdata, params]);
+    public async submitBlock(hexdata: string, dummy?: string): Promise<any> {
+        return this.bitcoinCore.callMethod('submitblock', [hexdata, dummy]);
     }
 
     // submitheader
-    public async submitHeader(header: string): Promise<any> {
-        return this.bitcoinCore.callMethod('submitheader', [header]);
+    public async submitHeader(hexdata: string): Promise<any> {
+        return this.bitcoinCore.callMethod('submitheader', [hexdata]);
     }
 }

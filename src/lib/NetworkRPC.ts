@@ -14,13 +14,16 @@ export class NetworkRPC {
     }
 
     // disconnectnode
-    public async disconnectNode(node: string): Promise<any> {
-        return this.bitcoinCore.callMethod('disconnectnode', [node]);
+    public async disconnectNode(
+        address?: string,
+        nodeId?: number
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('disconnectnode', [address, nodeId]);
     }
 
     // getaddednodeinfo
-    public async getAddedNodeInfo(node: string): Promise<any> {
-        return this.bitcoinCore.callMethod('getaddednodeinfo', [true, node]);
+    public async getAddedNodeInfo(node?: string): Promise<any> {
+        return this.bitcoinCore.callMethod('getaddednodeinfo', [node]);
     }
 
     // getconnectioncount
@@ -39,7 +42,7 @@ export class NetworkRPC {
     }
 
     // getnodeaddresses
-    public async getNodeAddresses(count: number = 100): Promise<any> {
+    public async getNodeAddresses(count: number = 1): Promise<any> {
         return this.bitcoinCore.callMethod('getnodeaddresses', [count]);
     }
 
@@ -60,15 +63,21 @@ export class NetworkRPC {
 
     // setban
     public async setBan(
-        node: string,
+        subnet: string,
         command: string,
-        bantime: number = 0
+        bantime: number = 0,
+        absolute: boolean = false
     ): Promise<any> {
-        return this.bitcoinCore.callMethod('setban', [node, command, bantime]);
+        return this.bitcoinCore.callMethod('setban', [
+            subnet,
+            command,
+            bantime,
+            absolute,
+        ]);
     }
 
     // setnetworkactive
-    public async setNetworkActive(active: boolean): Promise<any> {
-        return this.bitcoinCore.callMethod('setnetworkactive', [active]);
+    public async setNetworkActive(state: boolean): Promise<any> {
+        return this.bitcoinCore.callMethod('setnetworkactive', [state]);
     }
 }

@@ -14,34 +14,42 @@ export class WalletRPC {
     public async addMultiSigAddress(
         nrequired: number,
         keys: string[],
-        label: string = ''
+        label: string = '',
+        addressType?: 'legacy' | 'p2sh-segwit' | 'bech32'
     ): Promise<string> {
         return this.bitcoinCore.callMethod('addmultisigaddress', [
             nrequired,
             keys,
             label,
+            addressType,
         ]);
     }
 
-    public async backupWallet(dest: string): Promise<void> {
-        return this.bitcoinCore.callMethod('backupwallet', [dest]);
+    public async backupWallet(destination: string): Promise<void> {
+        return this.bitcoinCore.callMethod('backupwallet', [destination]);
     }
 
-    public async bumpFee(txid: string): Promise<any> {
-        return this.bitcoinCore.callMethod('bumpfee', [txid]);
+    public async bumpFee(txid: string, options?: {}): Promise<any> {
+        return this.bitcoinCore.callMethod('bumpfee', [txid, options]);
     }
 
     public async createWallet(
         walletName: string,
         disablePrivateKeys: boolean = false,
+        blank: boolean = false,
         passphrase: string = '',
-        avoidReuse: boolean = false
+        avoidReuse: boolean = false,
+        descriptors: boolean = false,
+        loadOnStartup?: boolean
     ): Promise<any> {
         return this.bitcoinCore.callMethod('createwallet', [
             walletName,
             disablePrivateKeys,
+            blank,
             passphrase,
             avoidReuse,
+            descriptors,
+            loadOnStartup,
         ]);
     }
 
@@ -66,12 +74,16 @@ export class WalletRPC {
     }
 
     public async getBalance(
+        dummy: string = '',
         minConf: number = 1,
-        includeWatchOnly: boolean = false
+        includeWatchOnly?: boolean,
+        avoidReuse: boolean = true
     ): Promise<number> {
         return this.bitcoinCore.callMethod('getbalance', [
+            dummy,
             minConf,
             includeWatchOnly,
+            avoidReuse,
         ]);
     }
 
@@ -79,12 +91,22 @@ export class WalletRPC {
         return this.bitcoinCore.callMethod('getbalances');
     }
 
-    public async getNewAddress(label: string = ''): Promise<string> {
-        return this.bitcoinCore.callMethod('getnewaddress', [label]);
+    public async getNewAddress(
+        label: string = '',
+        addressType?: 'legacy' | 'p2sh-segwit' | 'bech32'
+    ): Promise<string> {
+        return this.bitcoinCore.callMethod('getnewaddress', [
+            label,
+            addressType,
+        ]);
     }
 
-    public async getRawChangeAddress(): Promise<string> {
-        return this.bitcoinCore.callMethod('getrawchangeaddress');
+    public async getRawChangeAddress(
+        addressType?: 'legacy' | 'p2sh-segwit' | 'bech32'
+    ): Promise<string> {
+        return this.bitcoinCore.callMethod('getrawchangeaddress', [
+            addressType,
+        ]);
     }
 
     public async getReceivedByAddress(
@@ -107,8 +129,16 @@ export class WalletRPC {
         ]);
     }
 
-    public async getTransaction(txid: string): Promise<any> {
-        return this.bitcoinCore.callMethod('gettransaction', [txid]);
+    public async getTransaction(
+        txid: string,
+        includeWatchOnly?: boolean,
+        verbose: boolean = false
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('gettransaction', [
+            txid,
+            includeWatchOnly,
+            verbose,
+        ]);
     }
 
     public async getUnconfirmedBalance(): Promise<number> {
@@ -122,23 +152,19 @@ export class WalletRPC {
     public async importAddress(
         address: string,
         label: string = '',
-        rescan: boolean = true
+        rescan: boolean = true,
+        p2sh?: boolean
     ): Promise<void> {
         return this.bitcoinCore.callMethod('importaddress', [
             address,
             label,
             rescan,
+            p2sh,
         ]);
     }
 
-    public async importDescriptors(
-        descriptors: any[],
-        options: any = {}
-    ): Promise<void> {
-        return this.bitcoinCore.callMethod('importdescriptors', [
-            descriptors,
-            options,
-        ]);
+    public async importDescriptors(requests: any[]): Promise<void> {
+        return this.bitcoinCore.callMethod('importdescriptors', [requests]);
     }
 
     public async importMulti(
@@ -161,14 +187,12 @@ export class WalletRPC {
     }
 
     public async importPrunedFunds(
-        txid: string,
-        txOutProof: string,
-        rawTransaction: string
+        rawTransaction: string,
+        txOutProof: string
     ): Promise<void> {
         return this.bitcoinCore.callMethod('importprunedfunds', [
-            txid,
-            txOutProof,
             rawTransaction,
+            txOutProof,
         ]);
     }
 
@@ -188,16 +212,16 @@ export class WalletRPC {
         return this.bitcoinCore.callMethod('importwallet', [filename]);
     }
 
-    public async keyPoolRefill(nsize: number = 100): Promise<void> {
-        return this.bitcoinCore.callMethod('keypoolrefill', [nsize]);
+    public async keyPoolRefill(newSize: number = 100): Promise<void> {
+        return this.bitcoinCore.callMethod('keypoolrefill', [newSize]);
     }
 
     public async listAddressGroupings(): Promise<any[]> {
         return this.bitcoinCore.callMethod('listaddressgroupings');
     }
 
-    public async listLabels(): Promise<string[]> {
-        return this.bitcoinCore.callMethod('listlabels');
+    public async listLabels(purpose?: 'send' | 'receive'): Promise<string[]> {
+        return this.bitcoinCore.callMethod('listlabels', [purpose]);
     }
 
     public async listLockUnspent(): Promise<any[]> {
@@ -207,12 +231,14 @@ export class WalletRPC {
     public async listReceivedByAddress(
         minConf: number = 1,
         includeEmpty: boolean = false,
-        includeWatchOnly: boolean = false
+        includeWatchOnly: boolean = false,
+        addressFilter?: string
     ): Promise<any[]> {
         return this.bitcoinCore.callMethod('listreceivedbyaddress', [
             minConf,
             includeEmpty,
             includeWatchOnly,
+            addressFilter,
         ]);
     }
 
@@ -230,22 +256,26 @@ export class WalletRPC {
 
     public async listSinceBlock(
         blockHash: string = '',
-        targetConfirmations: number = 1
+        targetConfirmations: number = 1,
+        includeWatchOnly: boolean = false,
+        includeRemoved: boolean = true
     ): Promise<any> {
         return this.bitcoinCore.callMethod('listsinceblock', [
             blockHash,
             targetConfirmations,
+            includeWatchOnly,
+            includeRemoved,
         ]);
     }
 
     public async listTransactions(
-        account: string = '*',
+        label: string = '*',
         count: number = 10,
         skip: number = 0,
         includeWatchOnly: boolean = false
     ): Promise<any[]> {
         return this.bitcoinCore.callMethod('listtransactions', [
-            account,
+            label,
             count,
             skip,
             includeWatchOnly,
@@ -255,12 +285,16 @@ export class WalletRPC {
     public async listUnspent(
         minConf: number = 1,
         maxConf: number = 9999999,
-        addresses?: string[]
+        addresses?: string[],
+        includeUnsafe: boolean = true,
+        queryOptions: any = {}
     ): Promise<any[]> {
         return this.bitcoinCore.callMethod('listunspent', [
             minConf,
             maxConf,
             addresses,
+            includeUnsafe,
+            queryOptions,
         ]);
     }
 
@@ -272,85 +306,128 @@ export class WalletRPC {
         return this.bitcoinCore.callMethod('listwallets');
     }
 
-    public async loadWallet(filename: string): Promise<void> {
-        return this.bitcoinCore.callMethod('loadwallet', [filename]);
+    public async loadWallet(
+        filename: string,
+        loadOnStartup?: boolean
+    ): Promise<void> {
+        return this.bitcoinCore.callMethod('loadwallet', [
+            filename,
+            loadOnStartup,
+        ]);
     }
 
     public async lockUnspent(
-        lock: boolean,
+        unlock: boolean,
         transactions: any[]
     ): Promise<void> {
-        return this.bitcoinCore.callMethod('lockunspent', [lock, transactions]);
+        return this.bitcoinCore.callMethod('lockunspent', [
+            unlock,
+            transactions,
+        ]);
     }
 
-    public async psbtBumpFee(psbt: string): Promise<any> {
-        return this.bitcoinCore.callMethod('psbtbumpfee', [psbt]);
+    public async psbtBumpFee(txid: string, options: {}): Promise<any> {
+        return this.bitcoinCore.callMethod('psbtbumpfee', [txid, options]);
     }
 
     public async removePrunedFunds(txid: string): Promise<void> {
         return this.bitcoinCore.callMethod('removeprunedfunds', [txid]);
     }
 
-    public async rescanBlockchain(startBlockHash: string = ''): Promise<void> {
+    public async rescanBlockchain(
+        startHeight: number = 0,
+        stopHeight?: number
+    ): Promise<void> {
         return this.bitcoinCore.callMethod('rescanblockchain', [
-            startBlockHash,
+            startHeight,
+            stopHeight,
         ]);
     }
 
     public async send(
-        amount: number,
-        address: string,
-        comment: string = '',
-        commentTo: string = ''
+        outputs: any[],
+        confTarget?: number,
+        estimateMode: 'unset' | 'economical' | 'conservative' = 'unset',
+        feeRate?: number | string,
+        options: any = {}
     ): Promise<string> {
         return this.bitcoinCore.callMethod('send', [
-            amount,
-            address,
-            comment,
-            commentTo,
+            outputs,
+            confTarget,
+            estimateMode,
+            feeRate,
+            options,
         ]);
     }
 
     public async sendMany(
-        amounts: any,
+        dummy: string = '',
+        amounts: {},
+        minConf?: number,
         comment: string = '',
-        commentTo: string = ''
+        subtractFeeFrom: any[] = [],
+        replaceable?: boolean,
+        confTarget?: number,
+        estimateMode?: 'unset' | 'economical' | 'conservative',
+        feeRate?: number | string
     ): Promise<string> {
         return this.bitcoinCore.callMethod('sendmany', [
-            comment,
+            dummy,
             amounts,
-            commentTo,
+            minConf,
+            comment,
+            subtractFeeFrom,
+            replaceable,
+            confTarget,
+            estimateMode,
+            feeRate,
         ]);
     }
 
     public async sendToAddress(
         address: string,
-        amount: number,
+        amount: number | string,
         comment: string = '',
-        commentTo: string = ''
+        commentTo: string = '',
+        subtractFeeFromAmount: boolean = false,
+        replaceable: boolean = false,
+        confTarget?: number,
+        estimateMode?: 'unset' | 'economical' | 'conservative',
+        avoidReuse: boolean = true
     ): Promise<string> {
         return this.bitcoinCore.callMethod('sendtoaddress', [
             address,
             amount,
             comment,
             commentTo,
+            subtractFeeFromAmount,
+            replaceable,
+            confTarget,
+            estimateMode,
+            avoidReuse,
         ]);
     }
 
-    public async setHdSeed(newHdSeed: string): Promise<void> {
-        return this.bitcoinCore.callMethod('sethdseed', [newHdSeed]);
+    public async setHdSeed(
+        newKeyPool: boolean = true,
+        seed?: string
+    ): Promise<void> {
+        return this.bitcoinCore.callMethod('sethdseed', [newKeyPool, seed]);
     }
 
     public async setLabel(address: string, label: string): Promise<void> {
         return this.bitcoinCore.callMethod('setlabel', [address, label]);
     }
 
-    public async setTxFee(feeRate: number): Promise<void> {
-        return this.bitcoinCore.callMethod('settxfee', [feeRate]);
+    public async setTxFee(amount: number | string): Promise<void> {
+        return this.bitcoinCore.callMethod('settxfee', [amount]);
     }
 
-    public async setWalletFlag(flag: string): Promise<void> {
-        return this.bitcoinCore.callMethod('setwalletflag', [flag]);
+    public async setWalletFlag(
+        flag: string,
+        value: boolean = true
+    ): Promise<void> {
+        return this.bitcoinCore.callMethod('setwalletflag', [flag, value]);
     }
 
     public async signMessage(
@@ -360,31 +437,51 @@ export class WalletRPC {
         return this.bitcoinCore.callMethod('signmessage', [address, message]);
     }
 
-    public async signRawTransactionWithWallet(txData: any): Promise<any> {
+    public async signRawTransactionWithWallet(
+        hexString: string,
+        prevTxs?: any[],
+        sigHashType:
+            | 'All'
+            | 'NONE'
+            | 'SINGLE'
+            | 'ALL|ANYONECANPAY'
+            | 'NONE|ANYONECANPAY'
+            | 'SINGLE|ANYONECANPAY' = 'All'
+    ): Promise<any> {
         return this.bitcoinCore.callMethod('signrawtransactionwithwallet', [
-            txData,
+            hexString,
+            prevTxs,
+            sigHashType,
         ]);
     }
 
-    public async unloadWallet(): Promise<void> {
-        return this.bitcoinCore.callMethod('unloadwallet');
+    public async unloadWallet(
+        walletName?: string,
+        loadOnStartup?: boolean
+    ): Promise<void> {
+        return this.bitcoinCore.callMethod('unloadwallet', [
+            walletName,
+            loadOnStartup,
+        ]);
     }
 
-    public async upgradeWallet(): Promise<void> {
-        return this.bitcoinCore.callMethod('upgradewallet');
+    public async upgradeWallet(version: number = 169900): Promise<void> {
+        return this.bitcoinCore.callMethod('upgradewallet', [version]);
     }
 
     public async walletCreateFundedPsbt(
         inputs: any[],
         outputs: any[],
         locktime: number = 0,
-        options: any = {}
+        options: any = {},
+        bip32Derivs: boolean = true
     ): Promise<any> {
         return this.bitcoinCore.callMethod('walletcreatefundedpsbt', [
             inputs,
             outputs,
             locktime,
             options,
+            bip32Derivs,
         ]);
     }
 
@@ -415,12 +512,20 @@ export class WalletRPC {
     public async walletProcessPsbt(
         psbt: string,
         sign: boolean = true,
-        finalize: boolean = true
+        sigHashType:
+            | 'All'
+            | 'NONE'
+            | 'SINGLE'
+            | 'ALL|ANYONECANPAY'
+            | 'NONE|ANYONECANPAY'
+            | 'SINGLE|ANYONECANPAY' = 'All',
+        bip32Derivs: boolean = true
     ): Promise<any> {
         return this.bitcoinCore.callMethod('walletprocesspsbt', [
             psbt,
             sign,
-            finalize,
+            sigHashType,
+            bip32Derivs,
         ]);
     }
 }

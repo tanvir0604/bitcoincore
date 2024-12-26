@@ -18,7 +18,7 @@ export class GeneratingRPC {
     public async generateToAddress(
         nblocks: number,
         address: string,
-        maxtries: number = 100
+        maxtries: number = 1000000
     ): Promise<string[]> {
         return this.bitcoinCore.callMethod('generatetoaddress', [
             nblocks,
@@ -29,12 +29,12 @@ export class GeneratingRPC {
 
     // generatetodescriptor
     public async generateToDescriptor(
-        nblocks: number,
+        numBlocks: number,
         descriptor: string,
-        maxtries: number = 100
+        maxtries: number = 1000000
     ): Promise<string[]> {
         return this.bitcoinCore.callMethod('generatetodescriptor', [
-            nblocks,
+            numBlocks,
             descriptor,
             maxtries,
         ]);

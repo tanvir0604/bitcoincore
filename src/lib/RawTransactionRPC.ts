@@ -9,21 +9,26 @@ export class RawTransactionRPC {
     }
 
     // combinepsbt
-    public async combinePsbt(psbts: string[]): Promise<any> {
-        return this.bitcoinCore.callMethod('combinepsbt', [psbts]);
+    public async combinePsbt(txs: string[]): Promise<any> {
+        return this.bitcoinCore.callMethod('combinepsbt', [txs]);
     }
 
     // combinerawtransaction
-    public async combineRawTransaction(txns: string[]): Promise<string> {
-        return this.bitcoinCore.callMethod('combinerawtransaction', [txns]);
+    public async combineRawTransaction(txs: string[]): Promise<string> {
+        return this.bitcoinCore.callMethod('combinerawtransaction', [txs]);
     }
 
     // converttopsbt
     public async convertToPsbt(
-        rawTx: string,
-        sign: boolean = false
+        hexstring: string,
+        permitsigData: boolean = false,
+        isWitness?: boolean
     ): Promise<any> {
-        return this.bitcoinCore.callMethod('converttopsbt', [rawTx, sign]);
+        return this.bitcoinCore.callMethod('converttopsbt', [
+            hexstring,
+            permitsigData,
+            isWitness,
+        ]);
     }
 
     // createpsbt
@@ -62,61 +67,80 @@ export class RawTransactionRPC {
     }
 
     // decoderawtransaction
-    public async decodeRawTransaction(rawTx: string): Promise<any> {
-        return this.bitcoinCore.callMethod('decoderawtransaction', [rawTx]);
+    public async decodeRawTransaction(
+        hexString: string,
+        iswitness?: boolean
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('decoderawtransaction', [
+            hexString,
+            iswitness,
+        ]);
     }
 
     // decodescript
-    public async decodeScript(script: string): Promise<any> {
-        return this.bitcoinCore.callMethod('decodescript', [script]);
+    public async decodeScript(hexString: string): Promise<any> {
+        return this.bitcoinCore.callMethod('decodescript', [hexString]);
     }
 
     // finalizepsbt
-    public async finalizePsbt(psbt: string): Promise<any> {
-        return this.bitcoinCore.callMethod('finalizepsbt', [psbt]);
+    public async finalizePsbt(
+        psbt: string,
+        extract: boolean = true
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('finalizepsbt', [psbt, extract]);
     }
 
     // fundrawtransaction
     public async fundRawTransaction(
-        rawTx: string,
-        options: any = {}
+        hexString: string,
+        options: any = {},
+        isWitness?: boolean
     ): Promise<any> {
         return this.bitcoinCore.callMethod('fundrawtransaction', [
-            rawTx,
+            hexString,
             options,
+            isWitness,
         ]);
     }
 
     // getrawtransaction
     public async getRawTransaction(
         txid: string,
-        verbose: boolean = false
+        verbose: boolean = false,
+        blockHash?: string
     ): Promise<any> {
         return this.bitcoinCore.callMethod('getrawtransaction', [
             txid,
             verbose,
+            blockHash,
         ]);
     }
 
     // joinpsbts
-    public async joinPsbts(psbts: string[]): Promise<string> {
-        return this.bitcoinCore.callMethod('joinpsbts', [psbts]);
+    public async joinPsbts(txs: string[]): Promise<string> {
+        return this.bitcoinCore.callMethod('joinpsbts', [txs]);
     }
 
     // sendrawtransaction
-    public async sendRawTransaction(rawTx: string): Promise<string> {
-        return this.bitcoinCore.callMethod('sendrawtransaction', [rawTx]);
+    public async sendRawTransaction(
+        hexString: string,
+        maxFeerate: number | string = 0.1
+    ): Promise<string> {
+        return this.bitcoinCore.callMethod('sendrawtransaction', [
+            hexString,
+            maxFeerate,
+        ]);
     }
 
     // signrawtransactionwithkey
     public async signRawTransactionWithKey(
-        rawTx: string,
+        hexString: string,
         privKeys: string[],
         prevTxs: any[] = [],
         hashType: string = 'ALL'
     ): Promise<any> {
         return this.bitcoinCore.callMethod('signrawtransactionwithkey', [
-            rawTx,
+            hexString,
             privKeys,
             prevTxs,
             hashType,
@@ -124,12 +148,24 @@ export class RawTransactionRPC {
     }
 
     // testmempoolaccept
-    public async testMempoolAccept(rawTx: string): Promise<any> {
-        return this.bitcoinCore.callMethod('testmempoolaccept', [rawTx]);
+    public async testMempoolAccept(
+        rawTxs: string[],
+        maxFeerate: number | string = 0.1
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('testmempoolaccept', [
+            rawTxs,
+            maxFeerate,
+        ]);
     }
 
     // utxoupdatepsbt
-    public async utxoUpdatePsbt(psbt: string, utxos: any[]): Promise<string> {
-        return this.bitcoinCore.callMethod('utxoupdatepsbt', [psbt, utxos]);
+    public async utxoUpdatePsbt(
+        psbt: string,
+        descriptors?: any[]
+    ): Promise<string> {
+        return this.bitcoinCore.callMethod('utxoupdatepsbt', [
+            psbt,
+            descriptors,
+        ]);
     }
 }

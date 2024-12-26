@@ -29,7 +29,7 @@ export class BlockchainRPC {
     // getblockfilter
     public async getBlockFilter(
         blockHash: string,
-        filterType: string
+        filterType: string = 'basic'
     ): Promise<any> {
         return this.bitcoinCore.callMethod('getblockfilter', [
             blockHash,
@@ -38,8 +38,8 @@ export class BlockchainRPC {
     }
 
     // getblockhash
-    public async getBlockHash(index: number): Promise<string> {
-        return this.bitcoinCore.callMethod('getblockhash', [index]);
+    public async getBlockHash(height: number): Promise<string> {
+        return this.bitcoinCore.callMethod('getblockhash', [height]);
     }
 
     // getblockheader
@@ -54,8 +54,14 @@ export class BlockchainRPC {
     }
 
     // getblockstats
-    public async getBlockStats(blockHash: string): Promise<any> {
-        return this.bitcoinCore.callMethod('getblockstats', [blockHash]);
+    public async getBlockStats(
+        hashOrHeight: string | number,
+        stats: [] = []
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('getblockstats', [
+            hashOrHeight,
+            stats,
+        ]);
     }
 
     // getchaintips
@@ -65,11 +71,11 @@ export class BlockchainRPC {
 
     // getchaintxstats
     public async getChainTxStats(
-        blocks: number = 120,
+        nblocks?: number,
         blockHash?: string
     ): Promise<any> {
         return this.bitcoinCore.callMethod('getchaintxstats', [
-            blocks,
+            nblocks,
             blockHash,
         ]);
     }
@@ -82,7 +88,7 @@ export class BlockchainRPC {
     // getmempoolancestors
     public async getMempoolAncestors(
         txid: string,
-        verbose: boolean = true
+        verbose: boolean = false
     ): Promise<any> {
         return this.bitcoinCore.callMethod('getmempoolancestors', [
             txid,
@@ -93,7 +99,7 @@ export class BlockchainRPC {
     // getmempooldescendants
     public async getMempoolDescendants(
         txid: string,
-        verbose: boolean = true
+        verbose: boolean = false
     ): Promise<any> {
         return this.bitcoinCore.callMethod('getmempooldescendants', [
             txid,
@@ -112,19 +118,25 @@ export class BlockchainRPC {
     }
 
     // getrawmempool
-    public async getRawMempool(verbose: boolean = true): Promise<any> {
-        return this.bitcoinCore.callMethod('getrawmempool', [verbose]);
+    public async getRawMempool(
+        verbose: boolean = false,
+        mempoolSequence: boolean = false
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('getrawmempool', [
+            verbose,
+            mempoolSequence,
+        ]);
     }
 
     // gettxout
     public async getTxOut(
         txid: string,
-        vout: number,
+        n: number,
         includeMemPool: boolean = true
     ): Promise<any> {
         return this.bitcoinCore.callMethod('gettxout', [
             txid,
-            vout,
+            n,
             includeMemPool,
         ]);
     }
@@ -138,8 +150,10 @@ export class BlockchainRPC {
     }
 
     // gettxoutsetinfo
-    public async getTxOutSetInfo(): Promise<any> {
-        return this.bitcoinCore.callMethod('gettxoutsetinfo');
+    public async getTxOutSetInfo(
+        hashType: string = 'hash_serialized_2'
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('gettxoutsetinfo', [hashType]);
     }
 
     // preciousblock
@@ -158,13 +172,19 @@ export class BlockchainRPC {
     }
 
     // scantxoutset
-    public async scanTxOutSet(scanObjects: any[]): Promise<any> {
-        return this.bitcoinCore.callMethod('scantxoutset', [scanObjects]);
+    public async scanTxOutSet(
+        action: 'start' | 'abort' | 'status',
+        scanObjects: any[]
+    ): Promise<any> {
+        return this.bitcoinCore.callMethod('scantxoutset', [
+            action,
+            scanObjects,
+        ]);
     }
 
     // verifychain
     public async verifyChain(
-        checklevel: number = 3,
+        checklevel: 0 | 1 | 2 | 3 | 4 = 3,
         nblocks: number = 6
     ): Promise<any> {
         return this.bitcoinCore.callMethod('verifychain', [
