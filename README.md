@@ -98,6 +98,73 @@ const info = await client.UtilRPC.getIndexInfo(...);
 const info = await client.WalletRPC.getBalance(...);
 ```
 
+## Sample
+
+### Run bitcoin core
+
+Download and install bitcoincore in your machine
+
+Follow official [Bitcoin Core documentation](https://bitcoin.org/en/download) for more details instruction.
+
+### Create wallet
+
+```javascript
+return await client.WalletRPC.createWallet('your_wallet_name');
+```
+
+### Get wallet information
+
+```javascript
+return await client.WalletRPC.getWalletInfo({
+    wallet: 'your_wallet_name',
+});
+```
+
+### Wallet balance
+
+```javascript
+return await client.WalletRPC.getBalance({
+    wallet: 'your_wallet_name',
+});
+```
+
+### Create address
+
+```javascript
+return await client.WalletRPC.getNewAddress({
+    wallet: 'your_wallet_name',
+});
+```
+
+#### Respose
+
+```json
+tb1q30lhx0e00xql5gmwn59yvu3umf7s03p8tp4gdh
+```
+
+### Get address info
+
+```javascript
+return await client.WalletRPC.getAddressInfo(
+    'tb1q30lhx0e00xql5gmwn59yvu3umf7s03p8tp4gdh'
+);
+```
+
+### Take payment
+
+Send test bitcoin to the address. You can send test bitcoin using various testnet faucet for free. Then you can check your wallet balance to confirm that the payment has been received.
+
+### Monitor payment
+
+```javascript
+return await client.WalletRPC.getReceivedByAddress(
+    {
+        wallet: 'your_wallet_name',
+    },
+    'tb1q30lhx0e00xql5gmwn59yvu3umf7s03p8tp4gdh'
+);
+```
+
 ## License
 
 This package is released under the [MIT License](LICENSE).
