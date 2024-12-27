@@ -14,7 +14,7 @@ A comprehensive Node.js package for interacting with Bitcoin Core via RPC. Easil
 To install the package, use npm:
 
 ```bash
-npm install @tanvir0604/bitcoincore
+npm install @shafkat/bitcoincore
 ```
 
 ## Usage
@@ -26,13 +26,13 @@ Follow official [Bitcoin Core documentation](https://developer.bitcoin.org/refer
 ### Import Library
 
 ```javascript
-const BitcoinCore = require('@tanvir0604/bitcoincore');
+const BitcoinCore = require('@shafkat/bitcoincore');
 ```
 
 #### ES6
 
 ```javascript
-import { BitcoinCore } from '@tanvir0604/bitcoincore';
+import { BitcoinCore } from '@shafkat/bitcoincore';
 ```
 
 ### Example
