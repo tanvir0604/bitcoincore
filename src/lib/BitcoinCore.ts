@@ -10,6 +10,7 @@ import { UtilRPC } from './UtilRPC';
 import { WalletRPC } from './WalletRPC';
 
 export class BitcoinCore {
+    private url: string;
     private config: BitcoinCoreConfig;
     public BlockchainRPC: BlockchainRPC;
     public ControlRPC: ControlRPC;
@@ -30,15 +31,24 @@ export class BitcoinCore {
         this.RawTransactionRPC = new RawTransactionRPC(this);
         this.UtilRPC = new UtilRPC(this);
         this.WalletRPC = new WalletRPC(this);
+        this.url = `http://${this.config.host}:${this.config.port}`;
     }
 
-    public async callMethod(method: string, params: any[] = []) {
-        const url = `http://${this.config.host}:${this.config.port}`;
+    public async callMethod(
+        method: string,
+        params: any[] = [],
+        options?: { wallet: string }
+    ): Promise<any> {
         const auth = {
             username: this.config.username,
             password: this.config.password,
         };
 
+        const url = options?.wallet
+            ? `${this.url}/wallet/${options.wallet}`
+            : this.url;
+
+        // console.log(url);
         try {
             const response = await axios.post(
                 url,
@@ -50,9 +60,11 @@ export class BitcoinCore {
                 },
                 { auth }
             );
-            return response.data.result;
+            // console.log('response', response);
+            return response.data;
         } catch (error: any) {
-            throw new Error(`Error calling ${method}: ${error.message}`);
+            // console.log(error);
+            return error.response.data;
         }
     }
 }

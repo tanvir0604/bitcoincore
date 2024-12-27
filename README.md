@@ -40,10 +40,11 @@ import { BitcoinCore } from '@tanvir0604/bitcoincore';
 ```javascript
 // Create a new instance of BitcoinCore
 const client = new BitcoinCore({
-    host: 'localhost',
-    port: 8332,
-    username: 'username',
-    password: 'password',
+    network: 'test'
+    host: '127.0.0.1',
+    port: 18332,
+    username: 'rpcusername',
+    password: 'rpcpassword',
 });
 ```
 
