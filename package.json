@@ -1,6 +1,6 @@
 {
     "name": "@shafkat/bitcoincore",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "main": "dist/index.js",
     "types": "dist/types/index.d.ts",
     "scripts": {
