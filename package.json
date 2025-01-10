@@ -1,5 +1,5 @@
 {
-    "name": "@shafkat/bitcoincore",
+    "name": "bitcoincore-node",
     "version": "0.8.0",
     "main": "dist/index.js",
     "types": "dist/types/index.d.ts",

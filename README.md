@@ -1,4 +1,4 @@
-# @shafkat/bitcoincore
+# bitcoincore-node
 
 A comprehensive Node.js package for interacting with Bitcoin Core via RPC. Easily create, sign, and broadcast Bitcoin transactions, manage wallets, and access blockchain data through a simple and easy-to-use API interface. Perfect for developers building cryptocurrency applications, wallets, or integrating Bitcoin functionality into their services.
 
@@ -14,7 +14,7 @@ A comprehensive Node.js package for interacting with Bitcoin Core via RPC. Easil
 To install the package, use npm:
 
 ```bash
-npm install @shafkat/bitcoincore
+npm install bitcoincore-node
 ```
 
 ## Usage
@@ -26,13 +26,13 @@ Follow official [Bitcoin Core documentation](https://developer.bitcoin.org/refer
 ### Import Library
 
 ```javascript
-const BitcoinCore = require('@shafkat/bitcoincore');
+const BitcoinCore = require('bitcoincore-node');
 ```
 
 #### ES6
 
 ```javascript
-import { BitcoinCore } from '@shafkat/bitcoincore';
+import { BitcoinCore } from 'bitcoincore-node';
 ```
 
 ### Example
